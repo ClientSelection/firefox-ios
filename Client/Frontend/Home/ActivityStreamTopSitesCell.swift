@@ -248,15 +248,17 @@ class ASHorizontalScrollCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        let layout = collectionView.collectionViewLayout as! HorizontalFlowLayout
+        reloadData().uponQueue(DispatchQueue.main) { _ in
+            let layout = self.collectionView.collectionViewLayout as! HorizontalFlowLayout
 
-        gradientBG.frame = self.contentView.bounds
-        if gradientBG.superlayer == nil {
-            self.contentView.layer.insertSublayer(gradientBG, at: 0)
+            self.gradientBG.frame = self.contentView.bounds
+            if self.gradientBG.superlayer == nil {
+                self.contentView.layer.insertSublayer(self.gradientBG, at: 0)
+            }
+
+            self.pageControl.pageCount = layout.numberOfPages()
+            self.pageControl.isHidden = self.pageControl.pageCount <= 1
         }
-
-        pageControl.pageCount = layout.numberOfPages()
-        pageControl.isHidden = pageControl.pageCount <= 1
     }
 
     func currentPageChanged(_ currentPage: CGFloat) {
@@ -284,8 +286,12 @@ class ASHorizontalScrollCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
+    func reloadData() -> Success {
+        self.collectionView.reloadData()
+        return succeed()
+    }
+}
 /*
     A custom layout used to show a horizontal scrolling list with paging. Similar to iOS springboard.
     A modified version of http://stackoverflow.com/a/34167915
