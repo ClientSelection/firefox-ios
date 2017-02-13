@@ -10,7 +10,7 @@ public enum SyncReason: String {
     case startup = "startup"
     case scheduled = "scheduled"
     case backgrounded = "backgrounded"
-    case user = "user"
+    case syncNow = "syncNow"
     case didLogin = "didLogin"
 }
 
@@ -106,8 +106,10 @@ public class SyncOperationStatsSession: StatsSession {
 
     private let didLogin: Bool
 
-    public init(why: SyncReason) {
+    public init(why: SyncReason, uid: String?, deviceID: String?) {
         self.why = why
         self.didLogin = (why == .didLogin)
+        self.uid = uid
+        self.deviceID = deviceID
     }
 }
